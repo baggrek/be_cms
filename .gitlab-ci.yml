@@ -1,0 +1,90 @@
+services:
+  - postgres:latest
+  - docker:dind
+
+variables:
+  POSTGRES_DB: face-record_development
+
+stages:
+  - compile
+  - build
+  - deploy
+
+compile-rails:
+  image: "ruby:2.5.1"
+  variables:
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
+  stage: compile
+  environment: staging
+  script:
+    - apt-get update && apt install -y -qq nodejs
+    - gem install bundler -v 1.17.3 --no-ri --no-rdoc
+    - RAILS_ENV=test bundle install --jobs $(nproc) "${FLAGS[@]}"
+    - bundle exec rake db:migrate
+    - bundle exec rake db:seed
+  except:
+    - master
+    - develop
+
+build-image-staging:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  environment: staging
+  variables:
+    CONTAINER_IMAGE: registry.gitlab.com/arahdts/arah_ideasi/be_cms
+  script:
+    - 'ls'
+    - 'docker login -u $CI_USER -p $CI_PASSWORD $CI_URL'
+    - 'docker build -t $CONTAINER_IMAGE:latest .'
+    - 'docker push $CONTAINER_IMAGE:latest'
+  only:
+    - develop
+
+deploy-to-staging:
+  image: "ruby:2.5.1"
+  type: deploy
+  stage: deploy
+  environment: staging
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY_BE")
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh ubuntu@18.136.69.157 bash --login "./be_cms/s_be_cms.sh"
+  only:
+    - develop
+
+build-image-prod:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  environment: staging
+  variables:
+    CONTAINER_IMAGE: rregistry.gitlab.com/arahdts/arah_ideasi/be_cms
+  script:
+    - 'ls'
+    - 'docker login -u $CI_USER -p $CI_PASSWORD $CI_URL'
+    - 'docker build -t $CONTAINER_IMAGE:stable .'
+    - 'docker push $CONTAINER_IMAGE:stable'
+  only:
+    - develop
+
+
+deploy-to-prod:
+  image: "ruby:2.5.1"
+  type: deploy
+  stage: deploy
+  environment: production
+  script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY_PROD")
+    - mkdir -p ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - ssh ubuntu@api.lhsystems.com.sg bash --login "./p_be_record.sh"
+  only:
+    - master

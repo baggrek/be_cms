@@ -1,0 +1,23 @@
+version: '3'
+services:
+  be_cms:
+    image: be_cms:latest
+    hostname: be_cms
+    container_name: be_cms
+    command: bin/api_start
+    networks:
+      - be_cms-net
+    environment:
+      - DATABASE_HOST=p-klaproject.cgce6bsmkpoh.ap-southeast-1.rds.amazonaws.com
+      - DATABASE_PASSWORD=xxxxx
+      - DATABASE_USERNAME=xxxx
+    volumes:
+      - ./be_cms:/be_cms
+    ports:
+      - "8090:8090"
+volumes:
+  be_cms:
+
+networks:
+  be_cms-net:
+    driver: bridge
