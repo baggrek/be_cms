@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  sub_domain: MyString
+  pointing: MyString
+  cloudflare_domain: one
+
+two:
+  sub_domain: MyString
+  pointing: MyString
+  cloudflare_domain: two
