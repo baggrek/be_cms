@@ -1,8 +1,9 @@
 class V1::CountClicksController < ApiController
-  skip_before_action :check_admin
+  skip_before_action :check_admin, only: [:create]
 
   def index
-    @data = current_user.contents.order(id: :asc)
+    # binding.pry
+    @data = Content.joins(:content_details).order(id: :asc)
     set_response
   end
 
