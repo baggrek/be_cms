@@ -1,8 +1,8 @@
-class V1::CloudflareUsersController < ApiController
+class V1::AirplanesController < ApiController
   before_action :set_data, only: [:show, :update, :destroy]
 
   def index
-    @data = current_user.cloudflare_users.order(id: :asc)
+    @data = current_user.airplanes.order(id: :asc)
     set_response
   end
 
@@ -11,7 +11,7 @@ class V1::CloudflareUsersController < ApiController
   end
 
   def create
-    @data = current_user.cloudflare_users.create!(data_params)
+    @data = current_user.airplanes.create!(data_params)
     set_response
   end
 
@@ -28,7 +28,7 @@ class V1::CloudflareUsersController < ApiController
   private
 
   def set_data
-    @data = current_user.cloudflare_users.find_by!(id: params[:id])
+    @data = current_user.airplanes.find_by!(id: params[:id])
   end
 
   def set_response
@@ -36,6 +36,6 @@ class V1::CloudflareUsersController < ApiController
   end
 
   def data_params
-    params.permit(:email, :api_key, :user_id)
+    params.permit(:airplane_code, :airline, :capacity, :user_id)
   end
 end

@@ -33,10 +33,10 @@ build-image-staging:
   stage: build
   environment: staging
   variables:
-    CONTAINER_IMAGE: registry.gitlab.com/arahdts/arah_ideasi/be_cms
+    CONTAINER_IMAGE: arahideasi/be_cms
   script:
     - 'ls'
-    - 'docker login -u $CI_USER -p $CI_PASSWORD $CI_URL'
+    - 'docker login -u $DOCKER_IO_USER -p $DOCKER_IO_PASSWORD docker.io'
     - 'docker build -t $CONTAINER_IMAGE:latest .'
     - 'docker push $CONTAINER_IMAGE:latest'
   only:
