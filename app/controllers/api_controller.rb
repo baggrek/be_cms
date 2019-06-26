@@ -1,5 +1,6 @@
 class ApiController < ActionController::API
-  before_action :validate_api_key!
+  before_action :validate_api_key!, :check_admin
+  attr_reader :current_user
   include ExceptionHandler
 
   private
@@ -9,6 +10,11 @@ class ApiController < ActionController::API
   end
 
   def validate_api_key!
-    return render json: {status: false, result: nil, errors: "your api key is incorrect"}, status: :forbidden unless check_valid_key?
+    return render json: {status: false, result: nil, error: "your api key is incorrect"}, status: :forbidden unless check_valid_key?
+  end
+
+  def check_admin
+    @current_user = User.find_by!(id: params[:user_id])
+    return render json: {status: false, result: nil, error: "You'r Not Admin"}, status: :forbidden unless @current_user.is_admin?
   end
 end

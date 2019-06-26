@@ -7,12 +7,12 @@ Rails.application.routes.draw do
     resources :cloudflare_users, :path => 'CloudflareUser'
     resources :cloudflare_domains, :path => 'CloudflareDomain'
     resources :cloudflare_domain_details, :path => 'CloudflareDomainDetail'
+    resources :contents, :path => 'Content'
+    resources :airplanes, :path => "Airplane"
+    resources :count_clicks, :path => "ContentDetail"
 
-    ## Cloudflare Sub Domain
-    # get 'allCloudflareDomainDetail' => 'cloudflare_domain_details#index'
-    # post 'create/CloudflareDomainDetail' => 'cloudflare_domain_details#create'
-    # put 'update/CloudflareDomainDetail' => 'cloudflare_domain_details#update'
-    # delete 'delete/CloudflareDomainDetail' => 'cloudflare_domain_details#destroy'
-    # get 'show/CloudflareDomainDetail' => 'cloudflare_domain_details#show'
+    ## API Count Click 
+    # get 'ContentDetail' => 'count_clicks#index'
+    get 'showContentDetail' => 'count_clicks#show'
   end
 end
