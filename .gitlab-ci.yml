@@ -33,7 +33,7 @@ build-image-staging:
   stage: build
   environment: staging
   variables:
-    CONTAINER_IMAGE: arahideasi/be_cms
+    CONTAINER_IMAGE: repoarah/be_cms
   script:
     - 'ls'
     - 'docker login -u $DOCKER_IO_USER -p $DOCKER_IO_PASSWORD docker.io'
