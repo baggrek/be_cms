@@ -71,7 +71,7 @@ build-image-prod:
     - 'docker build -t $CONTAINER_IMAGE:stable .'
     - 'docker push $CONTAINER_IMAGE:stable'
   only:
-    - develop
+    - master
 
 
 deploy-to-prod:
